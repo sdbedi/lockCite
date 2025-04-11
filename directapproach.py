@@ -2,6 +2,7 @@ import os
 import sys
 from bs4 import BeautifulSoup
 from openai import OpenAI
+import json
 client = OpenAI()
 
 # Set your OpenAI API key from environment variable
@@ -38,15 +39,6 @@ If no negative treatment is present, return an empty array: []
     try:
         print("prompt:")
         print(prompt)
-        # response = openai.responses.create(
-        #     # model="gpt-4o",
-        #     # input=[
-        #     #     {"role": "system", "content": "You are a legal research assistant."},
-        #     #     {"role": "user", "content": prompt}
-        #     # ],
-        #     # temperature=0,
-        #     # max_output_tokens=2048
-        # )
         response = client.responses.create(
             model="gpt-4o",
             input=[
@@ -86,18 +78,17 @@ If no negative treatment is present, return an empty array: []
 
         print(response.output_text)
         treatments = response.output_text
-        raw_output = response["choices"][0]["message"]["content"]
 
-        # Try to parse the JSON list from the model
-        import json
+         # Try to parse the JSON list from the model   
         try:
-            treatments = json.loads(raw_output)
+            treatments = json.loads(response)
         except json.JSONDecodeError:
             print("⚠️ GPT response was not valid JSON. Raw response:")
-            print(raw_output)
+            print(response)
         #     return []
         print(f"Parsed treatments: {treatments}")
         return treatments
+
     except Exception as e:
         print(f"Error calling OpenAI API: {e}")
         return []
@@ -110,10 +101,12 @@ if __name__ == "__main__":
 
     slug = sys.argv[1]
     results = extract_negative_treatments(slug)
+    print(len(results))
 
     if not results:
         print("No negative treatments found.")
     else:
+        print("Negative treatments found:")
         print(results)
         # for r in results:
         #     print(f"Treated Case: {r.get('treated_case')}")
