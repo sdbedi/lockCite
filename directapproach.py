@@ -37,8 +37,6 @@ If no negative treatment is present, return an empty array: []
 """
 
     try:
-        print("prompt:")
-        print(prompt)
         response = client.responses.create(
             model="gpt-4o",
             input=[
@@ -75,18 +73,22 @@ If no negative treatment is present, return an empty array: []
         )
         print("GPT-4 response:")
         print(response)
-
+        
         print(response.output_text)
+
+        print("lengths")
+        print(len(response.output))
+        print(response.output)
         treatments = response.output_text
 
          # Try to parse the JSON list from the model   
-        try:
-            treatments = json.loads(response)
-        except json.JSONDecodeError:
-            print("⚠️ GPT response was not valid JSON. Raw response:")
-            print(response)
-        #     return []
-        print(f"Parsed treatments: {treatments}")
+        # try:
+        #     treatments = json.loads(response)
+        # except json.JSONDecodeError:
+        #     print("⚠️ GPT response was not valid JSON. Raw response:")
+        #     print(response)
+        # #     return []
+        # print(f"Parsed treatments: {treatments}")
         return treatments
 
     except Exception as e:
