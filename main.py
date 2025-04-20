@@ -129,7 +129,8 @@ From the text below, return a JSON array where each object includes:
 
 
 if len(sys.argv) != 2:
-    print("Usage: python case_analysis.py <slug>")
+    print("⚠️ Please provide the slug of the case as an argument.")
+    print("Usage: main.py <slug>")
     sys.exit(1)
 
 slug = sys.argv[1]
